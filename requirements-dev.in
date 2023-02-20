@@ -1,0 +1,6 @@
+-c requirements.txt
+pylint
+pycodestyle
+autopep8
+pytest
+pytest-mock
