@@ -145,3 +145,11 @@ class CartItemSerializer(serializers.ModelSerializer):
         product.save()
 
         return cart_item
+
+
+class OrderSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=20)
+    last_name = serializers.CharField(max_length=20)
+    address = serializers.CharField(max_length=200)
+    email = serializers.EmailField()
+    mobile_number = serializers.CharField(max_length=20)
