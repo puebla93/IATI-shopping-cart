@@ -5,3 +5,4 @@ pycodestyle
 autopep8
 pytest
 pytest-mock
+drf-yasg
