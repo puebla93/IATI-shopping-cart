@@ -4,5 +4,6 @@ flake8
 pycodestyle
 autopep8
 pytest
+pytest-django
 pytest-mock
 drf-yasg
