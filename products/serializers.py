@@ -1,9 +1,11 @@
 """Create your serializers here.
 """
 
+import datetime
+
 from rest_framework import serializers
 
-from .models import Product, Cap, Tshirt
+from products.models import Product, Cap, Tshirt, ShoppingCart, CartItem
 
 
 class CapSerializer(serializers.ModelSerializer):
@@ -87,3 +89,59 @@ class ProductSerializer(serializers.ModelSerializer):
     def update(self, instance: Product, validated_data: dict):
         validated_data.pop("initial_stock", None)
         return super().update(instance, validated_data)
+
+
+class ProductInCartSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(source="id", read_only=True)
+    descripcion = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ["product_id", "descripcion", "photo_url", "unit_price"]
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = serializers.JSONField()
+    quantity = serializers.IntegerField(default=1)
+
+    class Meta:
+        model = CartItem
+        exclude = ("id", "shopping_cart")
+
+    def validate_product(self, value: dict) -> dict:
+        product_id = value.get("id", None)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise serializers.ValidationError(f"{product_id} is an invalid product id.")
+
+        return product
+
+    def to_representation(self, instance: CartItem) -> dict:
+        data = ProductInCartSerializer(instance.product).data
+        data["quantity"] = instance.quantity
+
+        return data
+
+    def create(self, validated_data: dict) -> Cap | Tshirt:
+        today = datetime.date.today()
+        product: Product = validated_data["product"]
+        quantity: int = validated_data["quantity"]
+        try:
+            shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
+        except ShoppingCart.DoesNotExist:
+            shopping_cart = ShoppingCart.objects.create(created_on=today)
+
+        try:
+            cart_item = CartItem.objects.get(shopping_cart=shopping_cart, product=product)
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=quantity)
+        else:
+            cart_item += quantity
+            cart_item.save()
+
+        product.current_stock -= quantity
+        product.save()
+
+        return cart_item
