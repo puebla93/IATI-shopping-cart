@@ -119,7 +119,7 @@ class Tshirt(Product):
 
 class ShoppingCart(models.Model):
     purchased = models.BooleanField(default=False)
-    created_on = models.DateField()
+    created_on = models.DateField(auto_now_add=True)
 
 
 class CartItem(models.Model):
