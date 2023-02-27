@@ -125,13 +125,14 @@ class CartItemSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data: dict) -> Cap | Tshirt:
-        today = datetime.date.today()
         product: Product = validated_data["product"]
         quantity: int = validated_data["quantity"]
+
         try:
+            today = datetime.date.today()
             shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
         except ShoppingCart.DoesNotExist:
-            shopping_cart = ShoppingCart.objects.create(created_on=today)
+            shopping_cart = ShoppingCart.objects.create()
 
         try:
             cart_item = CartItem.objects.get(shopping_cart=shopping_cart, product=product)
