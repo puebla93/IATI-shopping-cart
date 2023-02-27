@@ -6,11 +6,15 @@ import datetime
 from django.db.models import Case, When, Value, CharField
 
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
+)
 
-from products.models import Product
-from products.serializers import ProductSerializer
+from products.models import Product, ShoppingCart, CartItem
+from products.serializers import ProductSerializer, CartItemSerializer
 
 
 class ProductListCreate(ListCreateAPIView):
@@ -37,3 +41,27 @@ class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         instance.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartItemCreate(CreateAPIView):
+    serializer_class = CartItemSerializer
+
+
+class ShoppingCartView(APIView):
+    def get(self, request: Request) -> Response:
+        today = datetime.date.today()
+
+        data = {
+            "products": [],
+            "total_products": 0
+        }
+        try:
+            shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
+        except ShoppingCart.DoesNotExist:
+            pass
+        else:
+            cart_items = CartItem.objects.filter(shopping_cart=shopping_cart)
+            data["products"] = CartItemSerializer(cart_items, many=True).data
+            data["total_products"] = sum(cart_item.quantity for cart_item in cart_items)
+
+        return Response(data)
