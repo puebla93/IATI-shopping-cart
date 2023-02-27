@@ -28,7 +28,7 @@ class ProductListCreate(ListCreateAPIView):
             When(product_type=Product.TSHIRT, then=Value(2)),
             output_field=CharField()
         ),
-        "inclusion_date"
+        "-inclusion_date"
     )
     serializer_class = ProductSerializer
 
