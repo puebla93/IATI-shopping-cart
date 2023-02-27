@@ -14,7 +14,9 @@ from rest_framework.generics import (
 )
 
 from products.models import Product, ShoppingCart, CartItem
-from products.serializers import ProductSerializer, CartItemSerializer
+from products.serializers import ProductSerializer, CartItemSerializer, OrderSerializer
+
+from utils import send_order_email
 
 
 class ProductListCreate(ListCreateAPIView):
@@ -65,3 +67,27 @@ class ShoppingCartView(APIView):
             data["total_products"] = sum(cart_item.quantity for cart_item in cart_items)
 
         return Response(data)
+
+
+class OrderView(APIView):
+    def post(self, request: Request) -> Response:
+        today = datetime.date.today()
+
+        serializer = OrderSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            # Return the validation errors in the response
+            return Response(serializer.errors, status=400)
+
+        try:
+            shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
+        except ShoppingCart.DoesNotExist:
+            return Response({"message": "There is no current shopping cart"}, status=404)
+
+        # Process the order
+        shopping_cart.purchased = True
+        shopping_cart.save()
+
+        send_order_email(serializer.validated_data)
+
+        return Response({"message": "Your order has been successfully processed."})
