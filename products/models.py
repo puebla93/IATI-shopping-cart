@@ -115,3 +115,14 @@ class Tshirt(Product):
 
     def get_composition_display(self):
         return ", ".join([f"{m}: {p}%" for m, p in self.composition.items()])
+
+
+class ShoppingCart(models.Model):
+    purchased = models.BooleanField(default=False)
+    created_on = models.DateField()
+
+
+class CartItem(models.Model):
+    shopping_cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
