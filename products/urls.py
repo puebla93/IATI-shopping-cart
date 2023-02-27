@@ -18,4 +18,8 @@ urlpatterns = [
         r"^view_cart/$", views.ShoppingCartView.as_view(),
         name="add_product_view"
     ),
+    re_path(
+        r"^order/$", views.OrderView.as_view(),
+        name="order_view"
+    ),
 ]
