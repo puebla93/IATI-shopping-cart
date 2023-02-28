@@ -3,18 +3,20 @@
 
 import datetime
 
+from django.db import transaction
 from django.db.models import Case, When, Value, CharField
 
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, GenericAPIView
 )
 
 from products.models import Product, ShoppingCart, CartItem
-from products.serializers import ProductSerializer, CartItemSerializer, OrderSerializer
+from products.serializers import (
+    ProductListCreateSerializer, ProductRetrieveUpdateDestroySerializer, CartItemSerializer, OrderSerializer
+)
 
 from utils import send_order_email
 
@@ -30,12 +32,12 @@ class ProductListCreate(ListCreateAPIView):
         ),
         "-inclusion_date"
     )
-    serializer_class = ProductSerializer
+    serializer_class = ProductListCreateSerializer
 
 
 class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all().filter(is_deleted=False)
-    serializer_class = ProductSerializer
+    serializer_class = ProductRetrieveUpdateDestroySerializer
 
     def perform_destroy(self, instance: Product):
         instance.is_deleted = True
@@ -49,7 +51,7 @@ class CartItemCreate(CreateAPIView):
     serializer_class = CartItemSerializer
 
 
-class ShoppingCartView(APIView):
+class ShoppingCartView(GenericAPIView):
     def get(self, request: Request) -> Response:
         today = datetime.date.today()
 
@@ -69,7 +71,9 @@ class ShoppingCartView(APIView):
         return Response(data)
 
 
-class OrderView(APIView):
+class OrderView(GenericAPIView):
+    serializer_class = OrderSerializer
+
     def post(self, request: Request) -> Response:
         today = datetime.date.today()
 
@@ -79,14 +83,18 @@ class OrderView(APIView):
             # Return the validation errors in the response
             return Response(serializer.errors, status=400)
 
+        @transaction.atomic()
+        def transactional_order():
+            shopping_cart = ShoppingCart.objects.select_for_update().get(created_on=today, purchased=False)
+
+            # Process the order
+            shopping_cart.purchased = True
+            shopping_cart.save()
+
         try:
-            shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
+            transactional_order()
         except ShoppingCart.DoesNotExist:
             return Response({"message": "There is no current shopping cart"}, status=404)
-
-        # Process the order
-        shopping_cart.purchased = True
-        shopping_cart.save()
 
         send_order_email(serializer.validated_data)
 

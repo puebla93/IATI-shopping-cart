@@ -3,6 +3,7 @@
 
 import datetime
 
+from django.db import transaction
 from rest_framework import serializers
 
 from products.models import Product, Cap, Tshirt, ShoppingCart, CartItem
@@ -31,11 +32,11 @@ class TshirtSerializer(serializers.ModelSerializer):
         return capitalized_value
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductListCreateSerializer(serializers.ModelSerializer):
     product_type = serializers.CharField()
-    current_stock = serializers.IntegerField(required=False)
+    current_stock = serializers.IntegerField(read_only=True)
     descripcion = serializers.CharField(read_only=True)
-    initial_stock = serializers.IntegerField(write_only=True, required=False, default=None)
+    initial_stock = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Product
@@ -53,10 +54,8 @@ class ProductSerializer(serializers.ModelSerializer):
         return capitalized_value
 
     def validate_initial_stock(self, value: int) -> int:
-        if self.instance and value is not None:
-            raise serializers.ValidationError("Initial stock cannot be modified")
-        if value is None and not self.instance:
-            self.fail("required")
+        if value < 0:
+            raise serializers.ValidationError("Initial stock cannot be negative")
         return value
 
     def to_representation(self, instance: Product) -> dict:
@@ -86,9 +85,24 @@ class ProductSerializer(serializers.ModelSerializer):
 
         return product
 
-    def update(self, instance: Product, validated_data: dict):
+class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
+    product_type = serializers.CharField(read_only=True)
+    descripcion = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Product
+        exclude = ("is_deleted", "deleted_at", "initial_stock")
+
+    def update(self, instance: Product, validated_data: dict) -> Cap | Tshirt:
         validated_data.pop("initial_stock", None)
-        return super().update(instance, validated_data)
+
+        @transaction.atomic()
+        def transactional_update() -> Cap | Tshirt:
+            return super().update(instance, validated_data)
+
+        product_instance = transactional_update()
+
+        return product_instance
 
 
 class ProductInCartSerializer(serializers.ModelSerializer):
@@ -101,22 +115,20 @@ class ProductInCartSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product = serializers.JSONField()
+    product_id = serializers.IntegerField()
     quantity = serializers.IntegerField(default=1)
 
     class Meta:
         model = CartItem
-        exclude = ("id", "shopping_cart")
+        fields = ("product_id", "quantity")
 
-    def validate_product(self, value: dict) -> dict:
-        product_id = value.get("id", None)
-
+    def validate_product(self, value: int) -> int:
         try:
-            product = Product.objects.get(id=product_id)
+            Product.objects.get(id=value)
         except Product.DoesNotExist:
-            raise serializers.ValidationError(f"{product_id} is an invalid product id.")
+            raise serializers.ValidationError(f"{value} is an invalid product id.")
 
-        return product
+        return value
 
     def to_representation(self, instance: CartItem) -> dict:
         data = ProductInCartSerializer(instance.product).data
@@ -125,25 +137,37 @@ class CartItemSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data: dict) -> Cap | Tshirt:
-        product: Product = validated_data["product"]
         quantity: int = validated_data["quantity"]
+        today = datetime.date.today()
 
-        try:
-            today = datetime.date.today()
-            shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
-        except ShoppingCart.DoesNotExist:
-            shopping_cart = ShoppingCart.objects.create()
+        @transaction.atomic()
+        def transactional():
+            try:
+                product: Product = Product.objects.select_for_update().get(
+                    id=validated_data["product_id"], is_deleted=False
+                )
+            except ShoppingCart.DoesNotExist:
+                raise serializers.ValidationError(f"{validated_data['product']['id']} is an invalid product id.")
 
-        try:
-            cart_item = CartItem.objects.get(shopping_cart=shopping_cart, product=product)
-        except CartItem.DoesNotExist:
-            cart_item = CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=quantity)
-        else:
-            cart_item += quantity
-            cart_item.save()
+            try:
+                shopping_cart = ShoppingCart.objects.select_for_update().get(created_on=today, purchased=False)
+            except ShoppingCart.DoesNotExist:
+                shopping_cart = ShoppingCart.objects.create()
 
-        product.current_stock -= quantity
-        product.save()
+            try:
+                cart_item = CartItem.objects.select_for_update().get(shopping_cart=shopping_cart, product=product)
+            except CartItem.DoesNotExist:
+                cart_item = CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=quantity)
+            else:
+                cart_item.quantity += quantity
+                cart_item.save()
+
+            product.current_stock -= quantity
+            product.save()
+
+            return cart_item
+
+        cart_item = transactional()
 
         return cart_item
 
