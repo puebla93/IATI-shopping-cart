@@ -110,10 +110,11 @@ class Tshirt(Product):
 
     @property
     def descripcion(self):
-        descripcion = f"{super().descripcion}, size {self.size}, composition {self.get_composition_display()}"
+        descripcion = f"{super().descripcion}, size {self.size}, composition {self.composition_display}"
         return descripcion
 
-    def get_composition_display(self):
+    @property
+    def composition_display(self):
         return ", ".join([f"{m}: {p}%" for m, p in self.composition.items()])
 
 
