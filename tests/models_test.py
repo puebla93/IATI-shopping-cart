@@ -1,4 +1,5 @@
 import random
+from decimal import Decimal
 from datetime import datetime
 
 import pytest
@@ -18,7 +19,7 @@ class TestProduct:
             brand="Acme",
             inclusion_date=datetime.utcnow().date(),
             photo_url="https://example.com/product.png",
-            unit_price=10.0,
+            unit_price=Decimal(10.0),
             initial_stock=100,
             current_stock=80
         )

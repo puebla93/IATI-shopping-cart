@@ -1,6 +1,8 @@
-import pytest
 import random
+from decimal import Decimal
 from datetime import datetime
+
+import pytest
 
 from products.models import Product, Cap, Tshirt, ShoppingCart
 
@@ -14,7 +16,7 @@ def product() -> Product:
         brand="Acme",
         inclusion_date=datetime.utcnow().date(),
         photo_url="https://example.com/product.png",
-        unit_price=10.0,
+        unit_price=Decimal(10.0),
         initial_stock=100,
         current_stock=80
     )
@@ -29,7 +31,7 @@ def cap_product() -> Cap:
         brand="Acme",
         inclusion_date=datetime.utcnow().date(),
         photo_url="https://example.com/cap.png",
-        unit_price=10.0,
+        unit_price=Decimal(10.0),
         initial_stock=100,
         current_stock=80,
         logo_color="black"
@@ -45,7 +47,7 @@ def tshirt_product() -> Tshirt:
         brand="Acme",
         inclusion_date=datetime.utcnow().date(),
         photo_url="https://example.com/tshirt.png",
-        unit_price=10.0,
+        unit_price=Decimal(10.0),
         initial_stock=100,
         current_stock=80,
         size="L",
