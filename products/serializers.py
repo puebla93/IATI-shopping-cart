@@ -94,11 +94,9 @@ class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
         exclude = ("is_deleted", "deleted_at", "initial_stock")
 
     def update(self, instance: Product, validated_data: dict) -> Cap | Tshirt:
-        validated_data.pop("initial_stock", None)
-
         @transaction.atomic()
         def transactional_update() -> Cap | Tshirt:
-            return super().update(instance, validated_data)
+            return super(ProductRetrieveUpdateDestroySerializer, self).update(instance, validated_data)
 
         product_instance = transactional_update()
 
@@ -150,21 +148,17 @@ class CartItemSerializer(serializers.ModelSerializer):
             product: Product = Product.objects.select_for_update().get(
                 id=validated_data["product_id"], is_deleted=False
             )
+            shopping_cart, _ = ShoppingCart.objects.select_for_update().get_or_create(
+                created_on=today, purchased=False
+            )
+            cart_item, _ = CartItem.objects.select_for_update().get_or_create(
+                shopping_cart=shopping_cart, product=product
+            )
 
-            try:
-                shopping_cart = ShoppingCart.objects.select_for_update().get(created_on=today, purchased=False)
-            except ShoppingCart.DoesNotExist:
-                shopping_cart = ShoppingCart.objects.create()
-
-            try:
-                cart_item = CartItem.objects.select_for_update().get(shopping_cart=shopping_cart, product=product)
-            except CartItem.DoesNotExist:
-                cart_item = CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=quantity)
-            else:
-                cart_item.quantity = max(0, cart_item.quantity + quantity)
-                cart_item.save()
-
+            cart_item.quantity = max(0, cart_item.quantity + quantity)
             product.current_stock -= quantity
+
+            cart_item.save()
             product.save()
 
             return cart_item
