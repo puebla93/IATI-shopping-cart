@@ -1,0 +1,6 @@
+[run]
+omit =
+    tests/*
+    manage.py
+    iati_shopping_cart/asgi.py
+    iati_shopping_cart/wsgi.py
