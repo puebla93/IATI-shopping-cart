@@ -7,7 +7,5 @@ class ProductsConfig(AppConfig):
     name = "products"
 
     def ready(self):
-        # Clean the database
-        # call_command("flush")
         # Load initial data
         call_command("loaddata", "initial_stock.yaml")
