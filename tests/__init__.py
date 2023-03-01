@@ -6,7 +6,7 @@ from products.models import Product, Cap, Tshirt, ShoppingCart
 
 
 @pytest.fixture
-def product():
+def product() -> Product:
     return Product.objects.create(
         product_type=random.choice(Product.PRODUCT_TYPES),
         main_color='red',
@@ -21,7 +21,7 @@ def product():
 
 
 @pytest.fixture
-def cap_product():
+def cap_product() -> Cap:
     return Cap.objects.create(
         product_type=Product.CAP,
         main_color='red',
@@ -37,7 +37,7 @@ def cap_product():
 
 
 @pytest.fixture
-def tshirt_product():
+def tshirt_product() -> Tshirt:
     return Tshirt.objects.create(
         product_type=Product.TSHIRT,
         main_color='red',
@@ -56,5 +56,5 @@ def tshirt_product():
 
 
 @pytest.fixture
-def shopping_cart():
+def shopping_cart() -> ShoppingCart:
     return ShoppingCart.objects.create()
