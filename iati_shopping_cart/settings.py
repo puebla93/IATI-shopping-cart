@@ -41,6 +41,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'products.apps.ProductsConfig',
     'drf_yasg',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    ('0 * * * *', 'products.cron.update_product_stock')
 ]
 
 MIDDLEWARE = [
@@ -116,7 +121,7 @@ USE_I18N = True
 USE_TZ = True
 
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
+EMAIL_HOST = f"smtp://{os.getenv('EMAIL_HOST', 'localhost')}"
 EMAIL_PORT = os.getenv("EMAIL_PORT", "1025")
 
 
