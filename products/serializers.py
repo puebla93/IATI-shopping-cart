@@ -136,13 +136,13 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = ("product_id", "quantity")
 
     def validate(self, attrs):
-        product_id = attrs['product_id']
+        product_id = attrs["product_id"]
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             raise serializers.ValidationError({"product_id": f"Product with id {product_id} does not exist."})
 
-        quantity = attrs['quantity']
+        quantity = attrs["quantity"]
         if quantity == 0:
             raise serializers.ValidationError(
                 {"quantity": "You need to add or remove products from your shopping cart, cannot be zero."}

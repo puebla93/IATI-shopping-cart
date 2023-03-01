@@ -1,8 +1,9 @@
 import random
 from decimal import Decimal
-from datetime import datetime
 
 import pytest
+
+from rest_framework.test import APIClient
 
 from products.models import Product, Cap, Tshirt, ShoppingCart, CartItem
 
@@ -65,3 +66,8 @@ def shopping_cart() -> ShoppingCart:
 @pytest.fixture
 def cart_item(product: Product, shopping_cart: ShoppingCart) -> CartItem:
     return CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=5)
+
+
+@pytest.fixture
+def api_client():
+    return APIClient()
