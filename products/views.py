@@ -1,7 +1,7 @@
 """Create your views here.
 """
 
-import datetime
+from datetime import datetime
 
 from django.db import transaction
 from django.db.models import Case, When, Value, CharField
@@ -41,7 +41,7 @@ class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, instance: Product):
         instance.is_deleted = True
-        instance.deleted_at = datetime.datetime.utcnow()
+        instance.deleted_at = datetime.utcnow()
         instance.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -53,7 +53,7 @@ class CartItemCreate(CreateAPIView):
 
 class ShoppingCartView(GenericAPIView):
     def get(self, request: Request) -> Response:
-        today = datetime.date.today()
+        today = datetime.utcnow().today()
 
         data = {}
         try:
@@ -73,7 +73,7 @@ class OrderView(GenericAPIView):
     serializer_class = OrderSerializer
 
     def post(self, request: Request) -> Response:
-        today = datetime.date.today()
+        today = datetime.utcnow().today()
 
         serializer = OrderSerializer(data=request.data)
 

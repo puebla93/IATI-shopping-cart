@@ -1,7 +1,7 @@
 """Create your serializers here.
 """
 
-import datetime
+from datetime import datetime
 
 from django.db import transaction
 from rest_framework import serializers
@@ -161,7 +161,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> Cap | Tshirt:
         quantity: int = validated_data["quantity"]
-        today = datetime.date.today()
+        today = datetime.utcnow().date()
 
         with transaction.atomic():
             product: Product = Product.objects.select_for_update().get(
