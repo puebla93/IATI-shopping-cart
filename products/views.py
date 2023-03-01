@@ -55,14 +55,12 @@ class ShoppingCartView(GenericAPIView):
     def get(self, request: Request) -> Response:
         today = datetime.date.today()
 
-        data = {
-            "products": [],
-            "total_products": 0
-        }
+        data = {}
         try:
             shopping_cart = ShoppingCart.objects.get(created_on=today, purchased=False)
         except ShoppingCart.DoesNotExist:
-            pass
+            data["products"] = []
+            data["total_products"] = 0
         else:
             cart_items = CartItem.objects.filter(shopping_cart=shopping_cart)
             data["products"] = CartItemSerializer(cart_items, many=True).data
