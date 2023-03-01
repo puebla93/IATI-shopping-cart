@@ -49,13 +49,13 @@ class ProductListCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"{capitalized_value} is an invalid product type.")
 
         if self.instance and self.instance.product_type != capitalized_value:
-            raise serializers.ValidationError("Product type cannot be modified")
+            raise serializers.ValidationError("Product type cannot be modified.")
 
         return capitalized_value
 
     def validate_initial_stock(self, value: int) -> int:
         if value < 0:
-            raise serializers.ValidationError("Initial stock cannot be negative")
+            raise serializers.ValidationError("Initial stock cannot be negative.")
         return value
 
     def to_representation(self, instance: Product) -> dict:

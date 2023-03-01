@@ -9,11 +9,11 @@ from products.models import Product, Cap, Tshirt, ShoppingCart
 def product() -> Product:
     return Product.objects.create(
         product_type=random.choice(Product.PRODUCT_TYPES),
-        main_color='red',
-        secondary_colors='blue, green',
-        brand='Acme',
+        main_color="red",
+        secondary_colors="blue, green",
+        brand="Acme",
         inclusion_date=datetime.utcnow().date(),
-        photo_url='https://example.com/product.png',
+        photo_url="https://example.com/product.png",
         unit_price=10.0,
         initial_stock=100,
         current_stock=80
@@ -24,11 +24,11 @@ def product() -> Product:
 def cap_product() -> Cap:
     return Cap.objects.create(
         product_type=Product.CAP,
-        main_color='red',
-        secondary_colors='blue, green',
-        brand='Acme',
+        main_color="red",
+        secondary_colors="blue, green",
+        brand="Acme",
         inclusion_date=datetime.utcnow().date(),
-        photo_url='https://example.com/cap.png',
+        photo_url="https://example.com/cap.png",
         unit_price=10.0,
         initial_stock=100,
         current_stock=80,
@@ -40,11 +40,11 @@ def cap_product() -> Cap:
 def tshirt_product() -> Tshirt:
     return Tshirt.objects.create(
         product_type=Product.TSHIRT,
-        main_color='red',
-        secondary_colors='blue, green',
-        brand='Acme',
+        main_color="red",
+        secondary_colors="blue, green",
+        brand="Acme",
         inclusion_date=datetime.utcnow().date(),
-        photo_url='https://example.com/tshirt.png',
+        photo_url="https://example.com/tshirt.png",
         unit_price=10.0,
         initial_stock=100,
         current_stock=80,

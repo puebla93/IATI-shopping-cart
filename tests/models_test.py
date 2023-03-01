@@ -1,21 +1,23 @@
-import pytest
+import random
 from datetime import datetime
+
+import pytest
 
 from products.models import Product, Tshirt, ShoppingCart, CartItem
 
-from tests import product, cap_product, tshirt_product, shopping_cart
+from tests import product, tshirt_product, shopping_cart
 
 
 class TestProduct:
     @pytest.mark.django_db
     def test_is_deleted_default_value(self):
         product = Product.objects.create(
-            product_type="Cap",
-            main_color='red',
-            secondary_colors='blue',
-            brand='Acme',
+            product_type=random.choice(Product.PRODUCT_TYPES),
+            main_color="red",
+            secondary_colors="blue",
+            brand="Acme",
             inclusion_date=datetime.utcnow().date(),
-            photo_url='https://example.com/product.png',
+            photo_url="https://example.com/product.png",
             unit_price=10.0,
             initial_stock=100,
             current_stock=80
