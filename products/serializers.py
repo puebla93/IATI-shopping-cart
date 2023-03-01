@@ -93,6 +93,16 @@ class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
         model = Product
         exclude = ("is_deleted", "deleted_at", "initial_stock")
 
+    def to_representation(self, instance: Product) -> dict:
+        data = super().to_representation(instance)
+
+        if hasattr(instance, "cap"):
+            data |= CapSerializer(instance.cap).to_representation(instance.cap)
+        elif hasattr(instance, "tshirt"):
+            data |= TshirtSerializer(instance.tshirt).to_representation(instance.tshirt)
+
+        return data
+
     def update(self, instance: Product, validated_data: dict) -> Cap | Tshirt:
         @transaction.atomic()
         def transactional_update() -> Cap | Tshirt:
@@ -143,8 +153,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         quantity: int = validated_data["quantity"]
         today = datetime.date.today()
 
-        @transaction.atomic()
-        def transactional():
+        with transaction.atomic():
             product: Product = Product.objects.select_for_update().get(
                 id=validated_data["product_id"], is_deleted=False
             )
@@ -162,10 +171,6 @@ class CartItemSerializer(serializers.ModelSerializer):
             product.save()
 
             return cart_item
-
-        cart_item = transactional()
-
-        return cart_item
 
 
 class OrderSerializer(serializers.Serializer):
