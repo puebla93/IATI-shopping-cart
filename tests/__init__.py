@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pytest
 
-from products.models import Product, Cap, Tshirt, ShoppingCart
+from products.models import Product, Cap, Tshirt, ShoppingCart, CartItem
 
 
 @pytest.fixture
@@ -60,3 +60,8 @@ def tshirt_product() -> Tshirt:
 @pytest.fixture
 def shopping_cart() -> ShoppingCart:
     return ShoppingCart.objects.create()
+
+
+@pytest.fixture
+def cart_item(product: Product, shopping_cart: ShoppingCart) -> CartItem:
+    return CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=5)
