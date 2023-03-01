@@ -120,7 +120,7 @@ class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
 
 
 class ProductInCartSerializer(serializers.ModelSerializer):
-    product_id = serializers.IntegerField(source="id", read_only=True)
+    product_id = serializers.IntegerField(source="id")
 
     class Meta:
         model = Product
@@ -143,6 +143,11 @@ class CartItemSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"product_id": f"Product with id {product_id} does not exist."})
 
         quantity = attrs['quantity']
+        if quantity == 0:
+            raise serializers.ValidationError(
+                {"quantity": "You need to add or remove products from your shopping cart, cannot be zero."}
+            )
+
         if quantity > product.current_stock:
             raise serializers.ValidationError({"quantity": "Not enough stock available."})
 
