@@ -355,11 +355,10 @@ class TestProductInCartSerializer:
 
     @pytest.mark.django_db
     def test_required_fields(self):
-        removed_field = random.choice(["product_id", "description", "photo_url", "unit_price"])
+        removed_field = random.choice(["product_id", "photo_url", "unit_price"])
 
         data = {
             "product_id": random.randint(1, 100),
-            "description": "fake description",
             "photo_url": "https://example.com/product.png",
             "unit_price": Decimal(10.0)
         }
