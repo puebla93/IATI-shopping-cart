@@ -276,7 +276,7 @@ class TestOrderView:
             "mobile_number": "+34123456789"
         }
 
-        mock_send_order_email = mocker.patch("utils.send_order_email")
+        mock_send_order_email = mocker.patch("products.views.send_order_email")
 
         response = api_client.post(self.URL, data=payload)
 
