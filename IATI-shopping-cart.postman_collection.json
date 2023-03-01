@@ -1,0 +1,443 @@
+{
+	"info": {
+		"_postman_id": "5e6b461c-e7d6-4999-84d7-77715913b062",
+		"name": "IATI-shopping-cart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20125106"
+	},
+	"item": [
+		{
+			"name": "Product endpoints",
+			"item": [
+				{
+					"name": "product_list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product_create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_type",
+									"value": "Tshirt",
+									"type": "text"
+								},
+								{
+									"key": "main_color",
+									"value": "Geen",
+									"type": "text"
+								},
+								{
+									"key": "secondary_colors",
+									"value": "Red, Violet",
+									"type": "text"
+								},
+								{
+									"key": "brand",
+									"value": "Puma",
+									"type": "text"
+								},
+								{
+									"key": "inclusion_date",
+									"value": "2018-12-31",
+									"type": "text"
+								},
+								{
+									"key": "photo_url",
+									"value": "https://example.com/cap5.jpg",
+									"type": "text"
+								},
+								{
+									"key": "unit_price",
+									"value": "1.99",
+									"type": "text"
+								},
+								{
+									"key": "initial_stock",
+									"value": "19",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "XL",
+									"type": "text"
+								},
+								{
+									"key": "composition",
+									"value": "{\"polyester\": 82, \"cotton\":18}",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Man",
+									"type": "text"
+								},
+								{
+									"key": "has_sleeves",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "logo_color",
+									"value": "Blue",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/products/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product_retrieve",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/:pk/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								":pk",
+								""
+							],
+							"variable": [
+								{
+									"key": "pk",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product_update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_type",
+									"value": "Tshirt",
+									"type": "text"
+								},
+								{
+									"key": "current_stock",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "descripcion",
+									"value": "Blue Champions Tshirt with secondary colors Black, Yellow, Gray, included in the catalog in the year 2015, size M, composition wool: 100%",
+									"type": "text"
+								},
+								{
+									"key": "main_color",
+									"value": "Blue",
+									"type": "text"
+								},
+								{
+									"key": "secondary_colors",
+									"value": "Black, Yellow, Gray",
+									"type": "text"
+								},
+								{
+									"key": "brand",
+									"value": "Champions",
+									"type": "text"
+								},
+								{
+									"key": "inclusion_date",
+									"value": "2015-02-21",
+									"type": "text"
+								},
+								{
+									"key": "photo_url",
+									"value": "https://example.com/tshirt3.jpg",
+									"type": "text"
+								},
+								{
+									"key": "unit_price",
+									"value": "12.40",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "composition",
+									"value": "{\"wool\": 100}",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Woman",
+									"type": "text"
+								},
+								{
+									"key": "has_sleeves",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "initial_stock",
+									"value": "0",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/products/:pk/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								":pk",
+								""
+							],
+							"variable": [
+								{
+									"key": "pk",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product_partial_update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "main_color",
+									"value": "Red",
+									"type": "text"
+								},
+								{
+									"key": "has_sleeves",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "logo_color",
+									"value": "Red",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/products/:pk/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								":pk",
+								""
+							],
+							"variable": [
+								{
+									"key": "pk",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product_delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/products/:pk/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"products",
+								":pk",
+								""
+							],
+							"variable": [
+								{
+									"key": "pk",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "add_product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product_id",
+							"value": "8",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "15",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/add_product/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"add_product",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view_cart",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/view_cart/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"view_cart",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Jane",
+							"type": "text"
+						},
+						{
+							"key": "last_name",
+							"value": "Doe",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "Barcelona, CP 08001",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "jane.doe@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "mobile_number",
+							"value": "+34123456789",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/order/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"order",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://127.0.0.1:8000/api/v1",
+			"type": "string"
+		}
+	]
+}
