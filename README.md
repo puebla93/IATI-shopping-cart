@@ -54,3 +54,9 @@ If you need more control:
 * Use `pytest -k test_fancy_func` to run all tests with the name `test_fancy_func`.
 * Use `pytest -k TestClassName` to run all tests that are located inside `TestClassName` class.
 * Use `pytest -q /path/to/test_foo.py` to run all tests inside the file `test_foo.py`.
+
+## Coverage
+
+* Run `pytest --cov=.` (this will run all tests and show coverage).
+
+> See [pytest-cov’s documentation](https://pytest-cov.readthedocs.io/en/latest/)
