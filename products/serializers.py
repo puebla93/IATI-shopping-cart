@@ -85,6 +85,7 @@ class ProductListCreateSerializer(serializers.ModelSerializer):
 
         return product
 
+
 class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
     product_type = serializers.CharField(read_only=True)
     description = serializers.CharField(read_only=True)
@@ -104,13 +105,18 @@ class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance: Product, validated_data: dict) -> Cap | Tshirt:
-        @transaction.atomic()
-        def transactional_update() -> Cap | Tshirt:
-            return super(ProductRetrieveUpdateDestroySerializer, self).update(instance, validated_data)
+        if instance.product_type == Product.CAP:
+            cap_serializer = CapSerializer(data=self.initial_data, partial=self.partial)
+            cap_serializer.is_valid(raise_exception=True)
+            validated_data |= cap_serializer.validated_data
+            instance = instance.cap
+        elif instance.product_type == Product.TSHIRT:
+            tshirt_serializer = TshirtSerializer(data=self.initial_data, partial=self.partial)
+            tshirt_serializer.is_valid(raise_exception=True)
+            validated_data |= tshirt_serializer.validated_data
+            instance = instance.tshirt
 
-        product_instance = transactional_update()
-
-        return product_instance
+        return super().update(instance, validated_data)
 
 
 class ProductInCartSerializer(serializers.ModelSerializer):
