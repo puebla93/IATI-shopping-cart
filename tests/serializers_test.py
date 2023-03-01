@@ -1,9 +1,8 @@
 import random
-from datetime import datetime
 from decimal import Decimal
+from datetime import datetime
 
 import pytest
-from pytest_mock import MockerFixture
 
 from products.models import Cap, Tshirt, Product, ShoppingCart, CartItem
 
