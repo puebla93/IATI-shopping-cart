@@ -496,9 +496,11 @@ class TestCartItemSerializer:
         serializer.create(serializer.validated_data)
 
         current_quantity = cart_item.quantity
+        current_stock = cart_item.product.current_stock
         cart_item.refresh_from_db()
 
-        assert cart_item.quantity == data["quantity"] + current_quantity
+        assert cart_item.quantity == current_quantity + data["quantity"]
+        assert cart_item.product.current_stock == current_stock - data["quantity"]
 
     @pytest.mark.django_db
     def test_cart_item_creation_remove_from_cart_item(self, cart_item: CartItem):
