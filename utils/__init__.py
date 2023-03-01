@@ -15,7 +15,7 @@ def send_order_email(order_form: dict) -> None:
     mobile_number = order_form["mobile_number"]
 
     subject = "Your order has been send"
-    message = f"Hi {name} {last_name}, your order has been send to {address}. We will reach out to you at the number " \
+    message = f"Hi {name} {last_name}, your order has been send to {address}. We will reach out to you at number " \
               f"{mobile_number} in case of a delay."
     from_email = "shopping_cart@gmail.com"
 
