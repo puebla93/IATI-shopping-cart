@@ -79,7 +79,7 @@ class OrderView(GenericAPIView):
 
         if not serializer.is_valid():
             # Return the validation errors in the response
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         @transaction.atomic()
         def transactional_order():
@@ -92,8 +92,8 @@ class OrderView(GenericAPIView):
         try:
             transactional_order()
         except ShoppingCart.DoesNotExist:
-            return Response({"message": "There is no current shopping cart"}, status=404)
+            return Response({"message": "There is no current shopping cart."}, status=status.HTTP_404_NOT_FOUND)
 
         send_order_email(serializer.validated_data)
 
-        return Response({"message": "Your order has been successfully processed."})
+        return Response({"message": "Your order has been successfully processed."}, status=status.HTTP_200_OK)
