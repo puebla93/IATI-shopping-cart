@@ -122,13 +122,18 @@ class CartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = ("product_id", "quantity")
 
-    def validate_product(self, value: int) -> int:
+    def validate(self, attrs):
+        product_id = attrs['product_id']
         try:
-            Product.objects.get(id=value)
+            product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
-            raise serializers.ValidationError(f"{value} is an invalid product id.")
+            raise serializers.ValidationError({"product_id": f"Product with id {product_id} does not exist."})
 
-        return value
+        quantity = attrs['quantity']
+        if quantity > product.current_stock:
+            raise serializers.ValidationError({"quantity": "Not enough stock available."})
+
+        return attrs
 
     def to_representation(self, instance: CartItem) -> dict:
         data = ProductInCartSerializer(instance.product).data
@@ -142,12 +147,9 @@ class CartItemSerializer(serializers.ModelSerializer):
 
         @transaction.atomic()
         def transactional():
-            try:
-                product: Product = Product.objects.select_for_update().get(
-                    id=validated_data["product_id"], is_deleted=False
-                )
-            except ShoppingCart.DoesNotExist:
-                raise serializers.ValidationError(f"{validated_data['product']['id']} is an invalid product id.")
+            product: Product = Product.objects.select_for_update().get(
+                id=validated_data["product_id"], is_deleted=False
+            )
 
             try:
                 shopping_cart = ShoppingCart.objects.select_for_update().get(created_on=today, purchased=False)
@@ -159,7 +161,7 @@ class CartItemSerializer(serializers.ModelSerializer):
             except CartItem.DoesNotExist:
                 cart_item = CartItem.objects.create(shopping_cart=shopping_cart, product=product, quantity=quantity)
             else:
-                cart_item.quantity += quantity
+                cart_item.quantity = max(0, cart_item.quantity + quantity)
                 cart_item.save()
 
             product.current_stock -= quantity
