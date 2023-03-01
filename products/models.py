@@ -67,10 +67,10 @@ class Product(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     @property
-    def descripcion(self) -> str:
-        descripcion = f"{self.main_color} {self.brand} {self.get_product_type_display()} with secondary colors "\
+    def description(self) -> str:
+        description = f"{self.main_color} {self.brand} {self.get_product_type_display()} with secondary colors "\
                       f"{self.secondary_colors}, included in the catalog in the year {self.inclusion_date.year}"
-        return descripcion
+        return description
 
 
 class Cap(Product):
@@ -109,9 +109,9 @@ class Tshirt(Product):
     has_sleeves = models.BooleanField()
 
     @property
-    def descripcion(self):
-        descripcion = f"{super().descripcion}, size {self.size}, composition {self.composition_display}"
-        return descripcion
+    def description(self):
+        description = f"{super().description}, size {self.size}, composition {self.composition_display}"
+        return description
 
     @property
     def composition_display(self):

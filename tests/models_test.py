@@ -27,16 +27,16 @@ class TestProduct:
 
     @pytest.mark.django_db
     def test_product_description(self, product: Product):
-        descripcion = f"{product.main_color} {product.brand} {product.get_product_type_display()} with secondary " \
+        description = f"{product.main_color} {product.brand} {product.get_product_type_display()} with secondary " \
                       f"colors {product.secondary_colors}, included in the catalog in the year " \
                       f"{product.inclusion_date.year}"
-        assert product.descripcion == descripcion
+        assert product.description == description
 
     @pytest.mark.django_db
     def test_thisrt_description(self, tshirt_product: Tshirt):
-        descripcion = f"{tshirt_product.product_ptr.descripcion}, size {tshirt_product.size}, composition " \
+        description = f"{tshirt_product.product_ptr.description}, size {tshirt_product.size}, composition " \
                       f"{tshirt_product.composition_display}"
-        assert tshirt_product.descripcion == descripcion
+        assert tshirt_product.description == description
 
     @pytest.mark.django_db
     def test_composition_display(self, tshirt_product: Tshirt):

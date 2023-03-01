@@ -17,11 +17,11 @@ class CapSerializer(serializers.ModelSerializer):
 
 class TshirtSerializer(serializers.ModelSerializer):
     gender = serializers.CharField()
-    descripcion = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
 
     class Meta:
         model = Tshirt
-        fields = ["size", "composition", "gender", "has_sleeves", "descripcion"]
+        fields = ["size", "composition", "gender", "has_sleeves", "description"]
 
     def validate_gender(self, value: str) -> str:
         capitalized_value = value.capitalize()
@@ -35,7 +35,7 @@ class TshirtSerializer(serializers.ModelSerializer):
 class ProductListCreateSerializer(serializers.ModelSerializer):
     product_type = serializers.CharField()
     current_stock = serializers.IntegerField(read_only=True)
-    descripcion = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
     initial_stock = serializers.IntegerField(write_only=True)
 
     class Meta:
@@ -87,7 +87,7 @@ class ProductListCreateSerializer(serializers.ModelSerializer):
 
 class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
     product_type = serializers.CharField(read_only=True)
-    descripcion = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
 
     class Meta:
         model = Product
@@ -105,11 +105,11 @@ class ProductRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
 
 class ProductInCartSerializer(serializers.ModelSerializer):
     product_id = serializers.IntegerField(source="id", read_only=True)
-    descripcion = serializers.CharField(read_only=True)
+    description = serializers.CharField(read_only=True)
 
     class Meta:
         model = Product
-        fields = ["product_id", "descripcion", "photo_url", "unit_price"]
+        fields = ["product_id", "description", "photo_url", "unit_price"]
 
 
 class CartItemSerializer(serializers.ModelSerializer):
