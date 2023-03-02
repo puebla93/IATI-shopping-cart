@@ -177,8 +177,8 @@ class CartItemSerializer(serializers.ModelSerializer):
             cart_item.quantity = max(0, cart_item.quantity + quantity)
             product.current_stock -= quantity
 
-            cart_item.save()
-            product.save()
+            cart_item.save(update_fields=["quantity"])
+            product.save(update_fields=["current_stock"])
 
             return cart_item
 
