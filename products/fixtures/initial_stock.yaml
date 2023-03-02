@@ -78,8 +78,8 @@
     inclusion_date: 2015-02-21
     photo_url: https://example.com/tshirt3.jpg
     unit_price: '12.40'
-    initial_stock: 0
-    current_stock: 0
+    initial_stock: 10
+    current_stock: 10
     is_deleted: false
     deleted_at: null
 - model: products.product
@@ -92,8 +92,8 @@
     inclusion_date: 2021-08-19
     photo_url: https://example.com/tshirt4.jpg
     unit_price: '8.95'
-    initial_stock: 100
-    current_stock: 100
+    initial_stock: 10
+    current_stock: 10
     is_deleted: false
     deleted_at: null
 - model: products.product
@@ -106,8 +106,8 @@
     inclusion_date: 2019-06-24
     photo_url: https://example.com/tshirt5.jpg
     unit_price: '29.50'
-    initial_stock: 37
-    current_stock: 37
+    initial_stock: 10
+    current_stock: 10
     is_deleted: false
     deleted_at: null
 - model: products.product
@@ -120,8 +120,8 @@
     inclusion_date: 2000-04-03
     photo_url: https://example.com/cap4.jpg
     unit_price: '5.20'
-    initial_stock: 6
-    current_stock: 6
+    initial_stock: 10
+    current_stock: 10
     is_deleted: false
     deleted_at: null
 - model: products.product
@@ -134,8 +134,8 @@
     inclusion_date: 2018-12-31
     photo_url: https://example.com/cap5.jpg
     unit_price: '1.99'
-    initial_stock: 19
-    current_stock: 19
+    initial_stock: 10
+    current_stock: 10
     is_deleted: false
     deleted_at: null
 - model: products.cap
