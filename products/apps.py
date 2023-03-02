@@ -9,3 +9,5 @@ class ProductsConfig(AppConfig):
     def ready(self):
         # Load initial data
         call_command("loaddata", "initial_stock.yaml")
+        # Add cron job
+        call_command("crontab", "add")
