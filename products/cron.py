@@ -5,7 +5,11 @@ from django.db.models import Q, Sum
 from products.models import Product, CartItem
 
 
-def update_product_stock():
+def update_product_stock() -> None:
+    """Update the products stock getting all cart items that are in a purchase shopping cart
+    or in the current shopping cart.
+    """
+
     products_quantity = CartItem.objects.filter(
         Q(shopping_cart__purchased=True) | Q(shopping_cart__created_on=datetime.utcnow().today())
     ).values('product_id').annotate(total=Sum('quantity'))
