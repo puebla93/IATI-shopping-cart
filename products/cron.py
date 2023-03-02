@@ -6,7 +6,7 @@ from products.models import Product, CartItem
 
 
 def update_product_stock() -> None:
-    """Update the products stock getting all cart items that are in a purchase shopping cart
+    """Update the products stock getting all cart items that are in a purchased shopping cart
     or in the current shopping cart. This function is executed by a cron jobs every hour.
     """
 
