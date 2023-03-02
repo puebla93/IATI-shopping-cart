@@ -4,6 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN set -ex \
     && apt-get update \
+    && apt-get install -y cron \
     && pip install --no-cache-dir pip-tools \
     && rm -rf /var/lib/apt/lists/*
 
