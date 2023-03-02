@@ -42,7 +42,7 @@ class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance: Product):
         instance.is_deleted = True
         instance.deleted_at = datetime.utcnow()
-        instance.save()
+        instance.save(update_fields=["is_deleted", "deleted_at"])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -87,7 +87,7 @@ class OrderView(GenericAPIView):
 
             # Process the order
             shopping_cart.purchased = True
-            shopping_cart.save()
+            shopping_cart.save(update_fields=["purchased"])
 
         try:
             transactional_order()
